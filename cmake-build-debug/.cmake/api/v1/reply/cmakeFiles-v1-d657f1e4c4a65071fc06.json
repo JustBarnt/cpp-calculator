@@ -1223,8 +1223,8 @@
 	"kind" : "cmakeFiles",
 	"paths" : 
 	{
-		"build" : "/Users/justbarnt/Developer/c_projects/calculator/cmake-build-debug",
-		"source" : "/Users/justbarnt/Developer/c_projects/calculator"
+		"build" : "/Users/justbarnt/Developer/c_projects/calc-2/cmake-build-debug",
+		"source" : "/Users/justbarnt/Developer/c_projects/calc-2"
 	},
 	"version" : 
 	{
