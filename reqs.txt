@@ -1,0 +1,5 @@
+Feed program a line.
+Validate that it is a valid line that can be calculated e.g. 4*7 and not 4 times 7
+Parse out the both numbers as left and right, and the operator as op
+use a switch statement to get the correct result.
+return the result or error depending on string validation
