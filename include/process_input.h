@@ -3,12 +3,23 @@
 #include <string>
 class InputParser {
 public:
-  // Member Functions
-  std::string ParseInput(std::string cinput);
+  InputParser();
+  ~InputParser();
+
+  void readInput();
+  void parseInput();
+  void walkString(std::string str);
+  void printEquation();
+
+  int getLhs() const;
+  int getRhs() const;
+  int getOperand() const;
 
 private:
+  std::string input;
   // TODO: Turn these into arrays to allow more complex arithmatic
-  int left_int;
-  int right_int;
-  char operand;
+
+  int lhs;
+  int rhs;
+  char op;
 };
