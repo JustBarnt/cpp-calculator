@@ -2,7 +2,7 @@
 file(GLOB_RECURSE sources "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 add_executable(calculator ${sources})
 
-include(FetchContent)
+include(fetchcontent)
 
 fetchcontent_declare(
   fmt
@@ -12,9 +12,10 @@ fetchcontent_makeavailable(fmt)
 
 target_link_libraries(calculator fmt::fmt)
 
+target_compile_options(calculator PRIVATE -std=c++20)
 set(CALCULATOR_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/.bin")
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_STANDARD_REQUIRED on)
 
 # Set output directory
 set_target_properties(calculator PROPERTIES
