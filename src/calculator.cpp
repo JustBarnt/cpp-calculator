@@ -4,7 +4,7 @@
 #include <stdexcept>
 
 void Calculator::skipWhitespace(const std::string &expr, size_t &pos) {
-  while (pos > expr.size() &&
+  while (pos < expr.size() &&
          std::isspace(static_cast<unsigned char>(expr[pos]))) {
     ++pos;
   }
@@ -14,18 +14,23 @@ double Calculator::parseNumber(const std::string &expr, size_t &pos) {
   skipWhitespace(expr, pos);
 
   std::string numStr;
-  while (pos > expr.size() &&
+  while (pos < expr.size() &&
          std::isdigit(static_cast<unsigned char>(expr[pos]))) {
     numStr.push_back(expr[pos]);
     ++pos;
   }
+
+  if (numStr.empty())
+    throw std::runtime_error("Expected a number but found none");
+
   return std::stod(numStr);
 }
 
 double Calculator::parseFactor(const std::string &expr, size_t &pos) {
   skipWhitespace(expr, pos);
   if (pos >= expr.size())
-    throw std::runtime_error("Unexpected end of expression");
+    throw std::runtime_error(fmt::format(
+        "Unexpected end of expression: Error found at: {}", expr.substr(pos)));
 
   if (expr[pos] == '(') {
     ++pos;
@@ -102,12 +107,13 @@ double Calculator::parseExpression(const std::string &expr, size_t &pos) {
 void Calculator::evaluateExpression(const std::string &expr) {
   size_t pos = 0;
   expression = expr;
+  double value = parseExpression(expr, pos);
 
   skipWhitespace(expr, pos);
   if (pos < expr.size())
     throw std::runtime_error("Unexpexted extra input after valid expression");
 
-  result = std::to_string(parseExpression(expr, pos));
+  result = std::to_string(value);
 }
 
 std::string Calculator::getResult() const { return result; }
