@@ -11,3 +11,8 @@ cd build; cmake ..
 # If using a editor such as Neovim run this to enable completions in your LSP (clangd)
 ln -s compile_commands.json ../
 ```
+
+## Building
+```bash
+cd build; cmake --build .
+```
