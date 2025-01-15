@@ -1,11 +1,11 @@
-cmake_minimum_required(VERSION 3.30)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.30)
 
-project(
+PROJECT(
   calculator
   VERSION 0.0.1
   LANGUAGES CXX
 )
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS on)
+SET(CMAKE_EXPORT_COMPILE_COMMANDS on)
 
-add_subdirectory(src)
+ADD_SUBDIRECTORY(src)

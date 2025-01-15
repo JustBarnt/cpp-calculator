@@ -1,26 +1,33 @@
 # Set up our executable
-file(GLOB_RECURSE sources "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
-add_executable(calculator ${sources})
+SET(sources
+    "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/calculator.cpp"
+)
 
-include(fetchcontent)
+ADD_EXECUTABLE(calculator ${sources})
 
-fetchcontent_declare(
+INCLUDE(fetchcontent)
+
+FETCHCONTENT_DECLARE(
   fmt
   GIT_REPOSITORY https://github.com/fmtlib/fmt
-  GIT_TAG        e3ddede6c4ee818825c4e5a6dfa1d384860c27d9) # 11.1.1
-fetchcontent_makeavailable(fmt)
+  GIT_TAG        e3ddede6c4ee818825c4e5a6dfa1d384860c27d9
+) # 11.1.1
 
-target_link_libraries(calculator fmt::fmt)
+FETCHCONTENT_MAKEAVAILABLE(fmt)
 
-target_compile_options(calculator PRIVATE -std=c++20)
-set(CALCULATOR_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/.bin")
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED on)
+TARGET_LINK_LIBRARIES(calculator fmt::fmt)
+
+TARGET_COMPILE_OPTIONS(calculator PRIVATE -std=c++20)
+SET(CALCULATOR_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/.bin")
 
 # Set output directory
-set_target_properties(calculator PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY "${CALCULATOR_OUTPUT_PATH}")
+SET_TARGET_PROPERTIES(calculator PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CALCULATOR_OUTPUT_PATH}"
+    CMAKE_CXX_STANDARD 20
+    CMAKE_CXX_STANDARD_REQUIRED on
+)
 
 # Set target includes
-target_include_directories(calculator
-    PUBLIC "${CMAKE_SOURCE_DIR}/include")
+TARGET_INCLUDE_DIRECTORIES(calculator
+    PRIVATE "${CMAKE_SOURCE_DIR}/include")

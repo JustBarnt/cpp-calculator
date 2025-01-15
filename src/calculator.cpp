@@ -2,20 +2,34 @@
 #include <cctype>
 #include <fmt/core.h>
 #include <stdexcept>
+#include <string>
 
-void Calculator::skipWhitespace(const std::string &expr, size_t &pos) {
-  while (pos < expr.size() &&
-         std::isspace(static_cast<unsigned char>(expr[pos]))) {
+namespace {
+using ctraits = std::char_traits<char>;
+bool is_space(char c) noexcept { return std::isblank(ctraits::to_int_type(c)); }
+// Helpers to quickly check if chararact at position is a digit
+bool is_digit(char c) noexcept { return std::isdigit(ctraits::to_int_type(c)); }
+} // namespace
+
+namespace {
+double parseTerm(const std::string_view &expr, size_t &pos);
+double parseExpression(const std::string_view &expr, size_t &pos);
+double parseFactor(const std::string_view &expr, size_t &pos);
+double parseNumber(const std::string_view &expr, size_t &pos);
+size_t skipWhitespace(const std::string_view &expr, size_t &pos);
+
+size_t skipWhitespace(const std::string_view &expr, size_t &pos) {
+  while (pos < expr.size() && is_space(expr[pos])) {
     ++pos;
   }
+  return pos;
 }
 
-double Calculator::parseNumber(const std::string &expr, size_t &pos) {
-  skipWhitespace(expr, pos);
+double parseNumber(const std::string_view &expr, size_t &pos) {
+  pos = skipWhitespace(expr, pos);
 
   std::string numStr;
-  while (pos < expr.size() &&
-         std::isdigit(static_cast<unsigned char>(expr[pos]))) {
+  while (pos < expr.size() && is_digit(expr[pos])) {
     numStr.push_back(expr[pos]);
     ++pos;
   }
@@ -26,8 +40,8 @@ double Calculator::parseNumber(const std::string &expr, size_t &pos) {
   return std::stod(numStr);
 }
 
-double Calculator::parseFactor(const std::string &expr, size_t &pos) {
-  skipWhitespace(expr, pos);
+double parseFactor(const std::string_view &expr, size_t &pos) {
+  pos = skipWhitespace(expr, pos);
   if (pos >= expr.size())
     throw std::runtime_error(fmt::format(
         "Unexpected end of expression: Error found at: {}", expr.substr(pos)));
@@ -36,13 +50,13 @@ double Calculator::parseFactor(const std::string &expr, size_t &pos) {
     ++pos;
     double value = parseExpression(expr, pos);
 
-    skipWhitespace(expr, pos);
+    pos = skipWhitespace(expr, pos);
     if (pos >= expr.size() || expr[pos] != ')') {
       throw std::runtime_error("Missing closing parathesis");
     }
     ++pos;
     return value;
-  } else if (std::isdigit(static_cast<unsigned char>(expr[pos]))) {
+  } else if (is_digit(static_cast<unsigned char>(expr[pos]))) {
     return parseNumber(expr, pos);
   } else {
     throw std::runtime_error(
@@ -50,10 +64,10 @@ double Calculator::parseFactor(const std::string &expr, size_t &pos) {
   }
 }
 
-double Calculator::parseTerm(const std::string &expr, size_t &pos) {
+double parseTerm(const std::string_view &expr, size_t &pos) {
   double value = parseFactor(expr, pos);
   while (true) {
-    skipWhitespace(expr, pos);
+    pos = skipWhitespace(expr, pos);
 
     if (pos >= expr.size())
       break;
@@ -78,11 +92,11 @@ double Calculator::parseTerm(const std::string &expr, size_t &pos) {
   return value;
 }
 
-double Calculator::parseExpression(const std::string &expr, size_t &pos) {
+double parseExpression(const std::string_view &expr, size_t &pos) {
   double value = parseTerm(expr, pos);
 
   while (true) {
-    skipWhitespace(expr, pos);
+    pos = skipWhitespace(expr, pos);
 
     if (pos >= expr.size())
       break;
@@ -103,19 +117,16 @@ double Calculator::parseExpression(const std::string &expr, size_t &pos) {
   }
   return value;
 }
+} // namespace
 
-void Calculator::evaluateExpression(const std::string &expr) {
+void Calculator::evaluateExpression(const std::string_view &expr) {
   size_t pos = 0;
   expression = expr;
   double value = parseExpression(expr, pos);
 
-  skipWhitespace(expr, pos);
+  pos = skipWhitespace(expr, pos);
   if (pos < expr.size())
     throw std::runtime_error("Unexpexted extra input after valid expression");
 
   result = std::to_string(value);
 }
-
-std::string Calculator::getResult() const { return result; }
-
-std::string Calculator::getExpression() const { return expression; }

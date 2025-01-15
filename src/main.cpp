@@ -1,13 +1,12 @@
 #include "calculator.h"
-#include <cctype>
 #include <exception>
-#include <fmt/core.h>
 #include <iostream>
 #include <memory>
 #include <string>
 
 int main() {
-  std::unique_ptr<Calculator> calc = std::make_unique<Calculator>();
+  std::string result, expression;
+  auto calc = std::make_unique<Calculator>(result, expression);
   std::string input;
   std::cout << "Please input an equation to be calculated."
                "\r\nExample: 4*9"
